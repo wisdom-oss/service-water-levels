@@ -42,6 +42,10 @@ func main() {
 	// create a new router
 	router := chi.NewRouter()
 	// add some middlewares to the router to allow identifying requests
+	httplog.Configure(httplog.Options{
+		JSON:    true,
+		Concise: true,
+	})
 	router.Use(httplog.Handler(l))
 	router.Use(chiMiddleware.RequestID)
 	router.Use(chiMiddleware.RealIP)
