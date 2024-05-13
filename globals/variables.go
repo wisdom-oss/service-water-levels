@@ -7,7 +7,7 @@ import (
 // This file contains globally shared variables (e.g., service name, sql queries)
 
 // ServiceName contains the global identifier for the service
-const ServiceName = "water-levels"
+const ServiceName = "groundwater-levels"
 
 // SqlQueries contains the prepared sql queries from the resources folder
 var SqlQueries *dotsql.DotSql
