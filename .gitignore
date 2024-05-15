@@ -33,6 +33,11 @@
 !go.mod
 !go.sum
 
+# allow graphql files
+!*.graphql
+
 # allow the following folders
 !globals/
 !routes/
+!types/
+!graphql/
