@@ -1,0 +1,50 @@
+schema {
+    query: Query
+}
+
+type Query {
+    """
+    measurements(from: Date, until: Date, classification: MeasurementClassification, station: ID): [Measurement!]!
+    """
+    station(WebsiteID: String!): Station
+    stations: [Station!]!
+
+}
+
+scalar Date
+
+enum MeasurementClassification {
+    CRITICALLY_LOW
+    VERY_LOW
+    LOW
+    NORMAL
+    HIGH
+    VERY_HIGH
+    CRITICALLY_HIGH
+}
+
+type Location {
+    """
+    Location represents a GeoJSON encoded Point geometry
+    """
+    type: String!
+    coordinates: [Float!]!
+}
+
+type Station {
+    name: String
+    websiteID: String,
+    publicID: String,
+    operator: String,
+    location: Location
+}
+
+
+type Measurement {
+    station: ID!,
+    date: Date!,
+    classification: MeasurementClassification
+    waterLevelNHN: Float
+    waterLevelGOK: Float
+}
+
