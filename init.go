@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 	wisdomType "github.com/wisdom-oss/commonTypes/v2"
 
@@ -17,6 +18,7 @@ import (
 
 	"microservice/globals"
 
+	pgx_geom "github.com/twpayne/pgx-geom"
 	_ "github.com/wisdom-oss/go-healthcheck/client"
 )
 
@@ -108,6 +110,9 @@ func connectDatabase() {
 
 	var err error
 	config, err := pgxpool.ParseConfig(address)
+	config.AfterConnect = func(ctx context.Context, conn *pgx.Conn) error {
+		return pgx_geom.Register(ctx, conn)
+	}
 	if err != nil {
 		log.Fatal().Err(err).Msg("unable to create base configuration for connection pool")
 	}
