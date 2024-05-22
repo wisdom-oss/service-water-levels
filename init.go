@@ -110,6 +110,9 @@ func connectDatabase() {
 
 	var err error
 	config, err := pgxpool.ParseConfig(address)
+	if err != nil {
+		log.Fatal().Err(err).Msg("unable to parse database config")
+	}
 	config.AfterConnect = func(ctx context.Context, conn *pgx.Conn) error {
 		return pgx_geom.Register(ctx, conn)
 	}
