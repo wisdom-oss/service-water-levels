@@ -2,7 +2,7 @@
 SELECT *
 FROM geodata.water_level_stations;
 
--- name: get-single-stations
+-- name: get-single-station
 SELECT *
 FROM geodata.water_level_stations
 WHERE website_id = $1;
