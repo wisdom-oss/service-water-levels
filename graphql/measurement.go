@@ -109,7 +109,7 @@ func (Query) Measurements(args *MeasurementArguments) ([]Measurement, error) {
 		var nhnf64, gokf64 *float64
 
 		nhn, _ = m.WaterLevelNHN.MarshalJSON()
-		gok, _ = m.WaterLevelNHN.MarshalJSON()
+		gok, _ = m.WaterLevelGOK.MarshalJSON()
 		err = json.Unmarshal(nhn, &nhnf64)
 		if err != nil {
 			return nil, err
