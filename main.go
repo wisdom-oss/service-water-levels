@@ -64,6 +64,7 @@ func main() {
 	// now start parsing the graphql part to allow graphql queries
 	gqlSchema := gographql.MustParseSchema(graphQlSchema, &graphql.Query{}, gographql.UseFieldResolvers())
 	router.Handle("/graphql", &relay.Handler{Schema: gqlSchema})
+	router.NotFound(errorMiddleware.NotFoundError)
 
 	// now boot up the service
 	// Configure the HTTP server
