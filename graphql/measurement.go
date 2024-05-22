@@ -50,9 +50,11 @@ func (Query) Measurements(args *MeasurementArguments) ([]Measurement, error) {
 	switch {
 	case args.Until == nil && args.From == nil && args.Station == nil:
 		rawQuery, err = globals.SqlQueries.Raw("get-measurements")
+
 	case args.Until == nil && args.From == nil && args.Station != nil:
 		rawQuery, err = globals.SqlQueries.Raw("get-measurements-for-station")
 		queryArgs = append(queryArgs, *args.Station)
+
 	case (args.Until != nil || args.From != nil) && (args.Station == nil || (args.Station != nil && strings.TrimSpace(*args.Station) == "")):
 		rawQuery, err = globals.SqlQueries.Raw("get-measurements-in-range")
 		if args.Until == nil || args.Until.IsZero() {
@@ -71,10 +73,11 @@ func (Query) Measurements(args *MeasurementArguments) ([]Measurement, error) {
 		}
 
 		queryArgs = append(queryArgs, from, until)
+
 	case (args.Until != nil || args.From != nil) && args.Station != nil:
 		rawQuery, err = globals.SqlQueries.Raw("get-measurements-for-station-in-range")
-		if args.Until.IsZero() {
-			*args.Until = graphql.Time{Time: time.Now()}
+		if args.Until == nil || args.Until.IsZero() {
+			args.Until = &graphql.Time{Time: time.Now()}
 		}
 		from := pgtype.Date{}
 		err := from.Scan((*args.From).Time)
@@ -83,7 +86,7 @@ func (Query) Measurements(args *MeasurementArguments) ([]Measurement, error) {
 		}
 
 		until := pgtype.Date{}
-		err = from.Scan((*args.Until).Time)
+		err = until.Scan((*args.Until).Time)
 		if err != nil {
 			return nil, err
 		}
