@@ -59,6 +59,7 @@ func main() {
 	// now mount the admin router
 	router.HandleFunc("/", routes.AllLocations)
 	router.HandleFunc("/{stationID}", routes.SingleStation)
+	router.HandleFunc("/measurements", routes.Measurements)
 
 	// now start parsing the graphql part to allow graphql queries
 	gqlSchema := gographql.MustParseSchema(graphQlSchema, &graphql.Query{}, gographql.UseFieldResolvers())

@@ -3,25 +3,13 @@ schema {
 }
 
 type Query {
-    """
-    measurements(from: Date, until: Date, classification: MeasurementClassification, station: ID): [Measurement!]!
-    """
+    measurements(from: Time, until: Time, station: ID): [Measurement!]!
     station(WebsiteID: String!): Station
     stations: [Station!]!
 
 }
 
-scalar Date
-
-enum MeasurementClassification {
-    CRITICALLY_LOW
-    VERY_LOW
-    LOW
-    NORMAL
-    HIGH
-    VERY_HIGH
-    CRITICALLY_HIGH
-}
+scalar Time
 
 type Location {
     """
@@ -41,9 +29,9 @@ type Station {
 
 
 type Measurement {
-    station: ID!,
-    date: Date!,
-    classification: MeasurementClassification
+    station: String!,
+    date: Time!,
+    classification: String
     waterLevelNHN: Float
     waterLevelGOK: Float
 }
