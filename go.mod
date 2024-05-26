@@ -15,7 +15,7 @@ require (
 	github.com/twpayne/pgx-geom v0.0.0-20240315001804-85b6e06bd7e0
 	github.com/wisdom-oss/commonTypes/v2 v2.0.1
 	github.com/wisdom-oss/go-healthcheck v1.0.2
-	github.com/wisdom-oss/microservice-middlewares/v5 v5.1.1
+	github.com/wisdom-oss/microservice-middlewares/v5 v5.1.2
 
 )
 
