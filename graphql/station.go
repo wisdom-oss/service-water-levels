@@ -14,11 +14,11 @@ import (
 )
 
 type Station struct {
-	WebsiteID *string         `db:"website_id"`
-	PublicID  *string         `db:"public_id"`
-	Name      *string         `db:"name"`
-	Operator  *string         `db:"operator"`
-	Location  *types.Location `db:"location"`
+	WebsiteID *string         `db:"website_id" json:"websiteID"`
+	PublicID  *string         `db:"public_id" json:"publicID"`
+	Name      *string         `db:"name" json:"name"`
+	Operator  *string         `db:"operator" json:"operator"`
+	Location  *types.Location `db:"location" json:"location"`
 }
 
 func (Query) Station(args struct{ WebsiteID string }) (*Station, error) {
