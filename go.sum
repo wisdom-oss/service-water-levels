@@ -82,6 +82,8 @@ github.com/wisdom-oss/go-healthcheck v1.0.2 h1:GB6XFXo1mO9GDcQwXrK6edH9x1qGxZB0J
 github.com/wisdom-oss/go-healthcheck v1.0.2/go.mod h1:H2bLbrxhptz7EuK3SaW4HPVW7VF9C+UTeeWs7aLB5GE=
 github.com/wisdom-oss/microservice-middlewares/v5 v5.1.1 h1:c8kmSP70D7TX35P002sjAkSkF5EikBausNCZXbjVeUg=
 github.com/wisdom-oss/microservice-middlewares/v5 v5.1.1/go.mod h1:TfHxxd8ckJue6w8ha+jvF2qucOf66zVv89u3SQR2BHs=
+github.com/wisdom-oss/microservice-middlewares/v5 v5.1.2 h1:FGWKRxFVGa+Rew115bMJ3L8Ue7EXywfhXefebEIC55A=
+github.com/wisdom-oss/microservice-middlewares/v5 v5.1.2/go.mod h1:TfHxxd8ckJue6w8ha+jvF2qucOf66zVv89u3SQR2BHs=
 go.opentelemetry.io/otel v1.6.3/go.mod h1:7BgNga5fNlF/iZjG06hM3yofffp0ofKCDwSXx1GC4dI=
 go.opentelemetry.io/otel/trace v1.6.3/go.mod h1:GNJQusJlUgZl9/TQBPKU/Y/ty+0iVB5fjhKeJGZPGFs=
 golang.org/x/crypto v0.22.0 h1:g1v0xeRhjcugydODzvb3mEM9SQ0HGp9s/nh3COQ/C30=
