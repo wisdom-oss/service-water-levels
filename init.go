@@ -5,18 +5,21 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 	wisdomType "github.com/wisdom-oss/commonTypes/v2"
 
-	"github.com/joho/godotenv"
+	_ "github.com/joho/godotenv/autoload"
 
 	"github.com/qustavo/dotsql"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/rs/zerolog/pkgerrors"
 
+	"microservice/config"
 	"microservice/globals"
 
+	pgx_geom "github.com/twpayne/pgx-geom"
 	_ "github.com/wisdom-oss/go-healthcheck/client"
 )
 
@@ -24,10 +27,6 @@ import (
 // before main
 func init() {
 	// load the variables found in the .env file into the process environment
-	err := godotenv.Load()
-	if err != nil {
-		log.Debug().Msg("no .env files found")
-	}
 	configureLogger()
 	loadServiceConfiguration()
 	connectDatabase()
@@ -79,7 +78,7 @@ func loadServiceConfiguration() {
 	location, locationChanged := os.LookupEnv("ENV_CONFIG_LOCATION")
 	if !locationChanged {
 		// since the location has not changed, set the default value
-		location = "./environment.json"
+		location = config.EnvironmentFilePath
 		log.Debug().Msg("location for environment config not changed")
 	}
 	log.Debug().Str("path", location).Msg("loading environment requirements file")
@@ -107,11 +106,17 @@ func connectDatabase() {
 		globals.Environment["PG_HOST"], globals.Environment["PG_PORT"])
 
 	var err error
-	config, err := pgxpool.ParseConfig(address)
+	pgxConfig, err := pgxpool.ParseConfig(address)
+	if err != nil {
+		log.Fatal().Err(err).Msg("unable to parse database config")
+	}
+	pgxConfig.AfterConnect = func(ctx context.Context, conn *pgx.Conn) error {
+		return pgx_geom.Register(ctx, conn)
+	}
 	if err != nil {
 		log.Fatal().Err(err).Msg("unable to create base configuration for connection pool")
 	}
-	globals.Db, err = pgxpool.NewWithConfig(context.Background(), config)
+	globals.Db, err = pgxpool.NewWithConfig(context.Background(), pgxConfig)
 	if err != nil {
 		log.Fatal().Err(err).Msg("unable to create database connection pool")
 	}
@@ -130,8 +135,14 @@ func connectDatabase() {
 // This function is typically called during the startup of the microservice.
 func loadPreparedQueries() {
 	log.Info().Msg("loading prepared sql queries")
+	location, locationChanged := os.LookupEnv("QUERY_FILE_LOCATION")
+	if !locationChanged {
+		// since the location has not changed, set the default value
+		location = config.QueryFilePath
+		log.Debug().Msg("location for query file not changed")
+	}
 	var err error
-	globals.SqlQueries, err = dotsql.LoadFromFile(globals.Environment["QUERY_FILE_LOCATION"])
+	globals.SqlQueries, err = dotsql.LoadFromFile(location)
 	if err != nil {
 		log.Fatal().Err(err).Msg("failed to load prepared queries")
 	}

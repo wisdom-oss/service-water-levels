@@ -9,12 +9,15 @@ import (
 	"time"
 
 	"github.com/go-chi/chi/v5"
-	chiMiddleware "github.com/go-chi/chi/v5/middleware"
-	"github.com/go-chi/httplog"
+	"github.com/graph-gophers/graphql-go/relay"
 	"github.com/rs/zerolog/log"
 	healthcheckServer "github.com/wisdom-oss/go-healthcheck/server"
-	wisdomMiddleware "github.com/wisdom-oss/microservice-middlewares/v4"
+	errorMiddleware "github.com/wisdom-oss/microservice-middlewares/v5/error"
 
+	gographql "github.com/graph-gophers/graphql-go"
+
+	"microservice/config"
+	"microservice/graphql"
 	"microservice/routes"
 
 	"microservice/globals"
@@ -41,21 +44,21 @@ func main() {
 
 	// create a new router
 	router := chi.NewRouter()
-	// add some middlewares to the router to allow identifying requests
-	router.Use(httplog.Handler(l))
-	router.Use(chiMiddleware.RequestID)
-	router.Use(chiMiddleware.RealIP)
-	router.Use(wisdomMiddleware.ErrorHandler)
-	// now add the authorization middleware to the router
-	router.Use(wisdomMiddleware.Authorization(globals.ServiceName))
-	// now mount the admin router
-	router.HandleFunc("/", routes.BasicHandler)
-	router.HandleFunc("/internal-error", routes.BasicWithErrorHandling)
+	router.Use(config.Middlewares...)
+
+	router.HandleFunc("/", routes.AllLocations)
+	router.HandleFunc("/{stationID}", routes.SingleStation)
+	router.HandleFunc("/measurements", routes.Measurements)
+
+	// now start parsing the graphql part to allow graphql queries
+	gqlSchema := gographql.MustParseSchema(graphQlSchema, &graphql.Query{}, gographql.UseFieldResolvers())
+	router.Handle("/graphql", &relay.Handler{Schema: gqlSchema})
+	router.NotFound(errorMiddleware.NotFoundError)
 
 	// now boot up the service
 	// Configure the HTTP server
 	server := &http.Server{
-		Addr:         fmt.Sprintf("0.0.0.0:%s", globals.Environment["LISTEN_PORT"]),
+		Addr:         fmt.Sprintf("%s:%s", config.ListenAddress, globals.Environment["LISTEN_PORT"]),
 		WriteTimeout: time.Second * 600,
 		ReadTimeout:  time.Second * 600,
 		IdleTimeout:  time.Second * 600,

@@ -1,0 +1,38 @@
+schema {
+    query: Query
+}
+
+type Query {
+    measurements(from: Time, until: Time, station: ID): [Measurement!]!
+    station(WebsiteID: String!): Station
+    stations: [Station!]!
+
+}
+
+scalar Time
+
+type Location {
+    """
+    Location represents a GeoJSON encoded Point geometry
+    """
+    type: String!
+    coordinates: [Float!]!
+}
+
+type Station {
+    name: String
+    websiteID: String,
+    publicID: String,
+    operator: String,
+    location: Location
+}
+
+
+type Measurement {
+    station: String!,
+    date: Time!,
+    classification: String
+    waterLevelNHN: Float
+    waterLevelGOK: Float
+}
+
